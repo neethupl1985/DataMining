@@ -53,10 +53,15 @@ public class DataCleaning implements Function<OCLCBeans, Boolean> {
 
     public static String nullCheck(String value) {
         if (value == null || value.isEmpty() || value == "NULL") {
+
             return "Absent";
 
         } else {
-            return "Present";
+            value.replaceAll("\\p{Cntrl}", "");
+            if (value.isEmpty()) {
+                return "Absent";
+            }
+            return value;
         }
     }
 
