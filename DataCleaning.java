@@ -61,6 +61,7 @@ public class DataCleaning implements Function<OCLCBeans, Boolean> {
     }
 
 
+    //Extract the 1st 4 characters
     public static String trimData(String value) {
 
         return value.length() >= 4 ? value : value.substring(0, 4);
@@ -68,6 +69,7 @@ public class DataCleaning implements Function<OCLCBeans, Boolean> {
     }
 
 
+    //Counts space in a string
     public static String countSpace(String value) {
 
         return String.valueOf(value.split(" ").length);

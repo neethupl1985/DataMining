@@ -16,8 +16,11 @@ public class Modeling {
     public static void main(String[] args) throws Exception {
 
 
+        //Creating spark configuration
         SparkConf sparkConf = new SparkConf();
+        //setting up spark to run locally and not in cluster
         sparkConf.setMaster("local");
+        //sAssigning application name
         sparkConf.setAppName("DataMiningCleanUp");
         SparkContext sparky = new SparkContext(sparkConf);
         SparkSession spark = SparkSession
@@ -27,6 +30,7 @@ public class Modeling {
                 .getOrCreate();
         try (final JavaSparkContext context = new JavaSparkContext(sparky)) {
 
+            //Reading data from unmatched_records.txt
             JavaRDD<String> abc = context.textFile("/Users/lalithan/Downloads/unmatched_records.txt");
 
             JavaRDD<OCLCBeans> oclcRDD = abc.map(new Function<String, String>() {
@@ -87,10 +91,11 @@ public class Modeling {
             });
 
 
+            //Clean RDD contains the cleaned up data
             JavaRDD<OCLCBeans> cleanRDD = oclcRDD.filter(new DataCleaning());
 
-
-            JavaRDD<OCLCBeans> fpGrowthRDD = oclcRDD.filter(new FPGrowth());
+            //Cleaned RDD anagin filterd to perform data preparation for FpGrowth
+            JavaRDD<OCLCBeans> fpGrowthRDD = cleanRDD.filter(new FPGrowth());
 
 
             // Apply a schema to an RDD of JavaBeans to get a DataFrame
