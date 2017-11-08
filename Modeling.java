@@ -88,20 +88,22 @@ public class Modeling {
                 return oclc;
             });
 
+            JavaRDD<OCLCBeans> cleanRDD = oclcRDD.filter(new DataSetCleaning());
+
 
             //Clean RDD contains the cleaned up data
-            JavaRDD<OCLCBeans> cleanRDD = oclcRDD.filter(new DataCleaning());
+            JavaRDD<OCLCBeans> fpGrowth = cleanRDD.filter(new DataSetFpGrowth());
 
 
             // Apply a schema to an RDD of JavaBeans to get a DataFrame
-            Dataset<Row> oclcDF = spark.createDataFrame(cleanRDD, OCLCBeans.class);
+            Dataset<Row> oclcDF = spark.createDataFrame(fpGrowth, OCLCBeans.class);
             oclcDF.createOrReplaceTempView("OCLC");
 
 
             Dataset<Row> tableDF = spark.sql("SELECT id,created_date,updated_date" +
                     ",provider_uid,oclcnum,oclcnums,issn,eissn,isbn," +
                     "title,publisher,url,author,content,jkey,bkey,pubtype,coverage_start" +
-                    ",coverage_end,openaccess,holdings_regid,holdings_instid,isbns," +
+                    ",coverage_end,openaccess,holdings_regid," +
                     "user_oclcnum,user_oclcnums from OCLC ");
             tableDF.show();
             tableDF.toJavaRDD().saveAsTextFile("/Users/lalithan/Downloads/DataMing/output");
