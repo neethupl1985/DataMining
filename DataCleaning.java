@@ -10,66 +10,63 @@ public class DataCleaning implements Function<OCLCBeans, Boolean> {
 
     public Boolean call(OCLCBeans v1) throws Exception {
 
-        v1.setId(nullCheck(v1.getId()));
-        v1.setCreated_date(nullCheck(v1.getCreated_date()));
-        v1.setUpdated_date(nullCheck(v1.getUpdated_date()));
-        v1.setOwner_institution(nullCheck(v1.getOwner_institution()));
-        v1.setSource_institution(nullCheck(v1.getSource_institution()));
-        v1.setCollection_uid(nullCheck(v1.getCollection_uid()));
-        v1.setCollection_name(nullCheck(v1.getCollection_name()));
+        v1.setId(nullCheck(v1.getId(), "id"));
+        v1.setCreated_date(nullCheck(v1.getCreated_date(), "created_date"));
+        v1.setUpdated_date(nullCheck(v1.getUpdated_date(), "updated_date"));
         //No change for provider uid and provider name
         //v1.setProvider_uid(nullCheck(v1.getProvider_uid()));
         //v1.setProvider_name(nullCheck(v1.getProvider_name()));
-        v1.setOclcnum(nullCheck(v1.getOclcnum()));
-        v1.setOclcnums(nullCheck(v1.getOclcnums()));
-        v1.setIssn(nullCheck(v1.getIssn()));
-        v1.setEissn(nullCheck(v1.getEissn()));
-        v1.setIsbn(nullCheck(v1.getIsbn()));
-        v1.setWorkid(nullCheck(v1.getWorkid()));
-        v1.setTitle(nullCheck(v1.getTitle()));
-        v1.setScrubtitle(nullCheck(v1.getScrubtitle()));
-        v1.setPublisher(nullCheck(v1.getPublisher()));
-        v1.setUrl(nullCheck(v1.getUrl()));
-        v1.setAuthor(nullCheck(v1.getAuthor()));
-        // v1.setContent(nullCheck(v1.getContent()));
-        v1.setJkey(nullCheck(v1.getJkey()));
-        v1.setBkey(nullCheck(v1.getBkey()));
-        v1.setJsid(nullCheck(v1.getJsid()));
-        v1.setPubtype(nullCheck(v1.getPubtype()));
-        v1.setCoverage_start(trimData(v1.getCoverage_start()));
-        v1.setCoverage_end(trimData(v1.getCoverage_end()));
-        v1.setOpenaccess(nullCheck(v1.getOpenaccess()));
-        v1.setOpen(nullCheck(v1.getOpen()));
-        v1.setHoldings_regid(countSpace(v1.getHoldings_regid()));
-        v1.setHoldings_instid(nullCheck(v1.getHoldings_instid()));
-        v1.setIsbns(nullCheck(v1.getIsbns()));
-        v1.setUser_oclcnum(nullCheck(v1.getUser_oclcnum()));
-        v1.setUser_oclcnums(nullCheck(v1.getUser_oclcnums()));
+        v1.setOclcnum(nullCheck(v1.getOclcnum(), "oclcnum"));
+        v1.setOclcnums(nullCheck(v1.getOclcnums(), "oclcnums"));
+        v1.setIssn(nullCheck(v1.getIssn(), "issn"));
+        v1.setEissn(nullCheck(v1.getEissn(), "eissn"));
+        v1.setIsbn(nullCheck(v1.getIsbn(), "isbn"));
+        v1.setTitle(nullCheck(v1.getTitle(), "title"));
+        v1.setPublisher(nullCheck(v1.getPublisher(), "publisher"));
+        v1.setUrl(nullCheck(v1.getUrl(), "url"));
+        v1.setAuthor(nullCheck(v1.getAuthor(), "author"));
+        v1.setContent(nullCheck(v1.getContent(), "content"));
+        v1.setJkey(nullCheck(v1.getJkey(), "jkey"));
+        v1.setBkey(nullCheck(v1.getBkey(), "bkey"));
+        v1.setPubtype(nullCheck(v1.getPubtype(), "pubtype"));
+        // this needs to be modified to read  v1.setCoverage_start(trimData(v1.getCoverage_start()));
+        // this needs to be modified  v1.setCoverage_end(trimData(v1.getCoverage_end()));
+        v1.setCoverage_start(nullCheck(v1.getCoverage_start(), "coverage_start"));
+        v1.setCoverage_end(nullCheck(v1.getCoverage_end(), "coverage_end"));
+        v1.setOpenaccess(nullCheck(v1.getOpenaccess(), "openaccess")); // no clean up needed for this
+        v1.setOpen(nullCheck(v1.getOpen(), "open")); // not needed
+        // this needs to be modified  v1.setHoldings_regid(countSpace(v1.getHoldings_regid())); // how many libraries are to be selected
+        v1.setHoldings_regid(nullCheck(v1.getHoldings_regid(), "holdings_regid"));
+        v1.setHoldings_instid(nullCheck(v1.getHoldings_instid(), "holdings_instid"));  // not needed
+        v1.setIsbns(nullCheck(v1.getIsbns(), "isbns")); // not needed
+        v1.setUser_oclcnum(nullCheck(v1.getUser_oclcnum(), "user_oclcnum"));
+        v1.setUser_oclcnums(nullCheck(v1.getUser_oclcnums(), "user_oclcnums"));
 
         return v1 != null;
 
     }
 
 
-    public static String nullCheck(String value) {
+    public static String nullCheck(String value, String appendString) {
         if (value == null || value.isEmpty() || value == "NULL") {
 
-            return "Absent";
+            return "Absent" + "_" + appendString;
 
         } else {
             value.replaceAll("\\p{Cntrl}", "");
             if (value.isEmpty()) {
-                return "Absent";
+                return "Absent" + "_" + appendString;
             }
-            return value;
+
+
+            return "Present" + "_" + appendString;
         }
     }
 
 
     //Extract the 1st 4 characters
     public static String trimData(String value) {
-
-        return value.length() >= 4 ? value : value.substring(0, 4);
+        return value.length() > 4 ? value.substring(0, 4) : value;
 
     }
 
